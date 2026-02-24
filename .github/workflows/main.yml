@@ -12,16 +12,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       
-      # ESTE PASSO CRIA O ARQUIVO QUE ESTÁ FALTANDO NO SEU PROJETO
-      - name: Gerar Gradle Wrapper JAR
+      # ESTE PASSO BAIXA O MOTOR QUE ESTÁ FALTANDO DIRETO NO GITHUB
+      - name: Baixar Gradle Wrapper Real
         run: |
           mkdir -p gradle/wrapper
-          jar cvf gradle/wrapper/gradle-wrapper.jar . 
-          # O comando acima é um truque para o gradlew não dar erro de classe
+          curl -L https://github.com -o gradle/wrapper/gradle-wrapper.jar
         
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
       - name: Grant execute permission
         run: chmod +x gradlew
         

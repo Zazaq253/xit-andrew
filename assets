@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrew VIP - Login</title>
+    <style>
+        :root { --primary: #ff004c; --bg: #0a0a0a; --card: #151515; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        
+        .container { width: 320px; background: var(--card); border: 2px solid var(--primary); border-radius: 15px; box-shadow: 0 0 30px rgba(255, 0, 76, 0.4); overflow: hidden; }
+        .header { background: var(--primary); padding: 15px; text-align: center; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
+        .content { padding: 20px; }
+
+        /* Login */
+        #login-screen { display: block; text-align: center; }
+        .key-input { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; outline: none; text-align: center; }
+        .key-input:focus { border-color: var(--primary); }
+
+        /* Menu de Funções */
+        #menu-functions { display: none; } 
+
+        .section-name { font-size: 11px; color: var(--primary); margin: 15px 0 8px 0; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #333; }
+        .option { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; }
+        
+        /* Switches */
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(16px); }
+
+        .btn { width: 100%; padding: 12px; background: var(--primary); border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px var(--primary); }
+        input[type="color"] { border: none; width: 25px; height: 25px; background: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header" id="panel-title">ANDREW LOGIN</div>
+    
+    <div class="content">
+        <!-- TELA DE LOGIN -->
+        <div id="login-screen">
+            <p style="font-size: 12px; color: #888;">Insira sua credencial VIP</p>
+            <input type="text" id="userKey" class="key-input" placeholder="Sua Key aqui...">
+            <button class="btn" onclick="verificarLogin()">ENTRAR NO PAINEL</button>
+        </div>
+
+        <!-- TELA DE FUNÇÕES -->
+        <div id="menu-functions">
+            <div class="section-name">Combat</div>
+            <div class="option"><span>Aimbot Legit</span><label class="switch"><input type="checkbox" id="aim"><span class="slider"></span></label></div>
+            <div class="option"><span>Puxar na Parede</span><label class="switch"><input type="checkbox" id="wall"><span class="slider"></span></label></div>
+
+            <div class="section-name">Visual ESP</div>
+            <div class="option"><span>ESP Linha</span><label class="switch"><input type="checkbox" id="line"><span class="slider"></span></label></div>
+            <div class="option"><span>ESP Vida</span><label class="switch"><input type="checkbox" id="hp"><span class="slider"></span></label></div>
+            <div class="option"><span>Cor do ESP</span><input type="color" id="espColor" value="#ff004c"></div>
+
+            <button class="btn" style="margin-top: 15px;" onclick="enviarParaAndroid()">APLICAR CHEATS</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // A Key que você definiu
+    const KEY_CORRETA = "Andrew2";
+
+    function verificarLogin() {
+        const input = document.getElementById('userKey').value;
+
+        if (input === KEY_CORRETA) {
+            // Se a Key estiver certa, libera o menu
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('menu-functions').style.display = 'block';
+            document.getElementById('panel-title').innerText = "ANDREW MENU";
+        } else {
+            alert("Acesso Negado! Key incorreta.");
+        }
+    }
+
+    function enviarParaAndroid() {
+        const config = {
+            aim: document.getElementById('aim').checked,
+            wall: document.getElementById('wall').checked,
+            line: document.getElementById('line').checked,
+            hp: document.getElementById('hp').checked,
+            color: document.getElementById('espColor').value
+        };
+
+        // Envia o JSON para o seu código Java/C++
+        if (window.AndroidBridge) {
+            window.AndroidBridge.enviarConfig(JSON.stringify(config));
+            alert("Comandos enviados para o jogo!");
+        } else {
+            alert("Erro: Ponte Android não encontrada. Verifique o WebView.");
+        }
+    }
+</script>
+
+</body>
+</html>

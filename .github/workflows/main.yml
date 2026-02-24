@@ -12,20 +12,31 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       
-      # ESTE PASSO BAIXA O MOTOR QUE ESTÁ FALTANDO DIRETO NO GITHUB
-      - name: Baixar Gradle Wrapper Real
-        run: |
-          mkdir -p gradle/wrapper
-          curl -L https://github.com -o gradle/wrapper/gradle-wrapper.jar
-        
-      - name: Grant execute permission
-        run: chmod +x gradlew
-        
-      - name: Build APK
-        run: ./gradlew assembleDebug --stacktrace
+      # ESTE PASSO INSTALA O GRADLE DO ZERO SEM PRECISAR DO SEU GRADLEW
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 7.2
+
+      - name: Build APK sem gradlew
+        run: gradle assembleDebug --stacktrace
         
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: mod-menu-finalizado
+          name: mod-menu-pronto
           path: app/build/outputs/apk/debug/*.apk
+``` [1.4]
+
+### Por que isso vai funcionar?
+*   **Não usa o seu `gradlew`:** O erro `ClassNotFoundException` acontece porque o seu arquivo `gradlew` tenta abrir algo que não existe. Esse novo código usa o comando `gradle` direto do sistema do GitHub. [1.1, 1.5]
+*   **Independente de arquivos:** Você não precisa mais se preocupar em baixar o `.jar` ou criar a pasta `wrapper`. O GitHub faz tudo sozinho. [1.3]
+
+### O que fazer agora?
+1. Clique em **Commit changes**. [1.2]
+2. Vá na aba **Actions**. [1.7]
+3. **Aguarde:** O processo pode demorar um pouco mais agora (até 10 minutos) porque ele está baixando o motor do Android do zero.
+
+**Se a bolinha ficar vermelha agora, o erro deve mudar para algo como "Task 'assembleDebug' not found".** Se isso acontecer, significa que o seu arquivo `build.gradle` está no lugar errado ou o nome da pasta não é `app`.
+
+**Qual é o novo erro que aparece na aba Actions após usar esse código?**
